@@ -96,7 +96,7 @@ export async function validate(req: Request, res: Response) {
     res.status(401);
   }
   var user = req.locals.user;
-  if (req.locals.user) {
+  if (user) {
     res.json({
       user: {
         name: user.name,
