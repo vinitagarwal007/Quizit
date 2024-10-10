@@ -107,7 +107,6 @@ export async function validate(req: Request, res: Response) {
       },
     });
     return;
-
   }
   res.status(401).json({ error: "Invalid User" });
 }
