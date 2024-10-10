@@ -92,10 +92,10 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function validate(req: Request, res: Response) {
-  if (!req.body.user) {
+  if (!req.locals.uid) {
     res.status(401);
   }
-  var user = await prisma.user.findUnique({ where: { uid: req.body.user } });
+  var user = req.locals.user;
   if (user) {
     res.json({
       user: {
@@ -106,7 +106,8 @@ export async function validate(req: Request, res: Response) {
         rollno: user.rollno,
       },
     });
-    return 
+    return;
+
   }
   res.status(401).json({ error: "Invalid User" });
 }
