@@ -14,8 +14,12 @@ model user {
     username String? @unique
     password String?
     salt String?
-    rollno Int?
+    rollno Int? @unique
     provider authProvider @default(Email)
     providerToken String?
     role role @default(Student)
+
+    testManager testManager[]
+    submission submission[]
+    test test[]
 }

@@ -3,19 +3,24 @@ import jwt from "jsonwebtoken";
 
 export async function protect(req: Request ,res: Response, next: NextFunction){
     var token = req.cookies.token;
-
-    if(token){
-        try{
-            var val:any = await jwt.verify(token, process.env.JWT_SECRET!)
-            req.body.user = val.uid
-            next()
+    try {
+        
+        if(token){
+            try{
+                var val:any = await jwt.verify(token, process.env.JWT_SECRET!)
+                req.locals.uid = val.uid
+                next()
+            }
+            catch(err){
+                console.log(err)
+                res.clearCookie('token')
+                throw "Invalid Token"
+            }
+        }else{
+            throw "Auth Required"
         }
-        catch(err){
-            console.log(err)
-            // res.clearCookie('token')
-            res.status(401).json({error: "Invalid Token"})
-        }
-    }else{
-        res.status(401).json({error: "Unauthorized"})
+    } catch (error: any) {
+        res.status(401).json(error)
+        
     }
 }

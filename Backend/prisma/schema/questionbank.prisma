@@ -1,0 +1,18 @@
+enum qtype{
+    choice
+    long
+    file
+}
+
+model questionBank{
+    qid Int @id @default(autoincrement())
+    question String
+    answer String?
+    type qtype 
+    marks_awarded Int @default(1)
+    tid Int
+
+    test test @relation(fields: [tid], references: [tid])
+    options option[]
+    submission submission?
+}

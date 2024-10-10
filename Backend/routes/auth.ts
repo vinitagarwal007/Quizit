@@ -18,6 +18,11 @@ router.post(
   controller.user.register
 );
 
-router.get("/validate", middleware.authMidleware.protect, controller.user.validate);
+router.get(
+  "/validate",
+  middleware.authMidleware.protect,
+  middleware.injector.user,
+  controller.user.validate
+);
 
 export default router;
