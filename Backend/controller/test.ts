@@ -4,7 +4,7 @@ import * as types from "./interface/test";
 
 const prisma = new PrismaClient();
 
-export async function test(req: Request, res: Response) {
+export async function createTest(req: Request, res: Response) {
   if (!req.locals.user) {
     res.status(401);
   }
