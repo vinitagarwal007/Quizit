@@ -15,10 +15,8 @@ router.post(
   controller.test.createTest
 );
 
+router.get("/", controller.test.getTest);
 
-router.get(
-  "/get",
-  controller.test.createTest
-);
+router.get("/details", controller.test.getTestDetails);
 
 export default router;

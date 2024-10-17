@@ -1,0 +1,1 @@
+ALTER TABLE "questionBank" ADD COLUMN "insert_order" integer NOT NULL;

@@ -1,6 +1,6 @@
 {
-  "id": "3e07fe87-228e-446f-aba2-9a772c7fcfcd",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "858330b1-cf1a-4848-84ee-04f4c2e20478",
+  "prevId": "5c57fe93-bb0d-4095-aeb6-f8a42b4b2f4a",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -164,6 +164,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": 1
+        },
+        "insert_order": {
+          "name": "insert_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         },
         "tid": {
           "name": "tid",
@@ -464,13 +470,13 @@
           "name": "started_at",
           "type": "timestamp(3)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "ended_at": {
           "name": "ended_at",
           "type": "timestamp(3)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "violation": {
           "name": "violation",

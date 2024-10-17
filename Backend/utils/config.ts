@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { getDbInstance } from "../drizzle/db";
+import * as schema from "../drizzle/schema";
 
-const prisma = new PrismaClient();
-
+const db = getDbInstance();
 export class ConfigSingleton {
   private static instance: ConfigSingleton;
   config:any;
@@ -14,7 +14,7 @@ export class ConfigSingleton {
   }
 
   private async fetchConfig() {
-    var config = await prisma.config.findMany({});
+    var config = await db.select().from(schema.config);
     var inject: any = {};
     config.map((item) => {
       inject[item.configName] = item.configValue;
@@ -23,6 +23,7 @@ export class ConfigSingleton {
     this.configRegister = true;
     console.log("Config Fetched");
   }
+
   public static getInstance(): ConfigSingleton {
     if (!ConfigSingleton.instance) {
       ConfigSingleton.instance = new ConfigSingleton();

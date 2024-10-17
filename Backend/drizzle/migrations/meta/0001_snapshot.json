@@ -1,6 +1,6 @@
 {
-  "id": "3e07fe87-228e-446f-aba2-9a772c7fcfcd",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5c57fe93-bb0d-4095-aeb6-f8a42b4b2f4a",
+  "prevId": "3e07fe87-228e-446f-aba2-9a772c7fcfcd",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -164,6 +164,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": 1
+        },
+        "insert_order": {
+          "name": "insert_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         },
         "tid": {
           "name": "tid",
