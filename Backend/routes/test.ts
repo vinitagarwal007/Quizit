@@ -10,9 +10,13 @@ router.use(middleware.injector.user);
 
 router.post(
   "/create",
-  middleware.check.has_role("Teacher"),
+  middleware.check.has_role(["Teacher"]),
   validator.test.newTest,
-  controller.test.test
+  controller.test.createTest
 );
+
+router.get("/", controller.test.getTest);
+
+router.get("/details", controller.test.getTestDetails);
 
 export default router;

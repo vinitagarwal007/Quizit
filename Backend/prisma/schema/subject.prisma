@@ -1,7 +1,0 @@
-model subject{
-    sid Int @id @default(autoincrement())
-    name String
-    subjectID String
-
-    test test[]
-}

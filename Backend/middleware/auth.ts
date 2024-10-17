@@ -21,6 +21,5 @@ export async function protect(req: Request ,res: Response, next: NextFunction){
         }
     } catch (error: any) {
         res.status(401).json(error)
-        
     }
 }

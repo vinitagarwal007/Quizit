@@ -1,23 +1,28 @@
 import { Request, Response } from "express";
 import * as type from "./interface/auth";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ConfigSingleton } from "../utils/config";
+import { getDbInstance } from "../drizzle/db";
+import * as schema from "../drizzle/schema";
+import { eq, or } from "drizzle-orm";
 
 const config = ConfigSingleton.getInstance();
-const prisma = new PrismaClient();
+const db = getDbInstance();
 
 export async function login(req: Request, res: Response) {
   const data: type.login = req.body;
-  var user = await prisma.user.findUnique({
-    where: { username: data.username },
-  });
 
-  if (user === null) {
+  var userOb = await db
+    .select()
+    .from(schema.user)
+    .where(eq(schema.user.username, data.username));
+
+  if (userOb.length === 0) {
     res.status(400).json({ error: "User not found" });
     return;
   }
+  var user = userOb[0];
 
   var salt = user.salt;
   var is_valid = await bcrypt.compare(data.password, user.password!);
@@ -67,9 +72,13 @@ export async function register(req: Request, res: Response) {
     return;
   }
 
-  var is_duplicate = await prisma.user.count({
-    where: { username: data.email },
-  });
+  var is_duplicate = await db.$count(
+    schema.user,
+    or(
+      eq(schema.user.username, data.email),
+      eq(schema.user.rollno, data.rollno)
+    )
+  );
   if (is_duplicate !== 0) {
     res.status(400).json({ error: "User already exists" });
     return;
@@ -77,18 +86,19 @@ export async function register(req: Request, res: Response) {
 
   var salt = bcrypt.genSaltSync(10);
   var hash = bcrypt.hashSync(data.password, salt);
-  var user = await prisma.user.create({
-    data: {
+  var user = await db
+    .insert(schema.user)
+    .values({
       username: data.email,
       password: hash,
       name: data.name,
       rollno: data.rollno,
       salt: salt,
       provider: "Email",
-    },
-  });
+    })
+    .returning();
 
-  res.json({ uid: user.uid });
+  res.json({ uid: user[0].uid });
 }
 
 export async function validate(req: Request, res: Response) {
@@ -107,7 +117,6 @@ export async function validate(req: Request, res: Response) {
       },
     });
     return;
-
   }
   res.status(401).json({ error: "Invalid User" });
 }
