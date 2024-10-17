@@ -1,8 +1,0 @@
-model option{
-    oid Int @id @default(autoincrement())
-    option String
-    correct Boolean
-    qid Int
-
-    question questionBank @relation(fields: [qid], references: [qid])
-}

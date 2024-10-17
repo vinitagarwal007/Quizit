@@ -1,8 +1,0 @@
-model fileManager{
-    fid Int @id @default(autoincrement())
-    sid Int
-    file String
-    uploaded_at DateTime
-
-    submission submission @relation(fields: [sid], references: [sid])
-}
