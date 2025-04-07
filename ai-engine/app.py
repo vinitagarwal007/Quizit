@@ -6,10 +6,12 @@ from rouge_score import rouge_scorer
 import re
 from openai import OpenAI
 from dotenv import load_dotenv
-import uvicorn
 import os
+import logging
+
 
 load_dotenv()
+
 
 app = FastAPI()
 
@@ -47,21 +49,37 @@ def calculate_length_penalty(student_answer, teacher_answer):
 
 def generate_analysis(student_answer, teacher_answer):
     prompt = f"""
-    Please provide a brief and thoughtful analysis of the student's answer in comparison to the teacher's answer.
-    Highlight key differences, areas of improvement, and any strengths in the student's response.
-    Keep the analysis under 50 words and be gentle in your tone.
-    Do not involve any comparison based on punctuation.
+    As a teacher, provide constructive feedback on the student's answer, using the teacher's response as a guide.  
+    Without directly referencing the teacher's answer, identify areas where the student can improve and suggest actionable steps.  
     
-    Student Answer: {student_answer}
-    Teacher Answer: {teacher_answer}
+    Highlight both strengths and areas for growth in the student's response, while maintaining a positive, growth-oriented tone.  
+    Avoid commenting on punctuation differences. Keep your feedback concise, under 50 words.  
+    
+    Teacher Answer: {teacher_answer}  
+    Student Answer: {student_answer}  
 """
 
-    completion = client.chat.completions.create(
-        model="openai/gpt-4o-mini-2024-07-18",
-        messages=[{"role": "user", "content": prompt}],
-    )
+    # completion = client.chat.completions.create(
+    #     model="openai/gpt-3.5-turbo-0613",
+    #     messages=[{
+    #         "role": "user",
+    #         "content": prompt
+    #     }]
+    # )
 
-    analysis = completion.choices[0].message.content
+    # print(completion.choices)
+
+    try:
+        completion = client.chat.completions.create(
+            model="google/gemini-flash-1.5-8b",
+            messages=[{"role": "user", "content": prompt}],
+        )
+
+        analysis = completion.choices[0].message.content
+
+    except Exception as e:
+        print(e)
+
     return analysis
 
 
@@ -93,7 +111,7 @@ def evaluate_student_answer(student_answer, teacher_answer):
         (rouge1_f1 + rougeL_f1) / 2 * rouge_weight
     ) * (1 - length_penalty * length_penalty_weight)
 
-    return {"final_score": {round(final_score, 2)}, "analysis": analysis}
+    return {"final_score": round(final_score, 2), "analysis": analysis}
 
 
 @app.post("/evaluate")
@@ -104,11 +122,7 @@ async def evaluate(request: EvaluationRequest):
             status_code=400,
             detail="Both 'student_answer' and 'teacher_answer' are required.",
         )
-    print(request.student_answer, request.teacher_answer)
+
     results = evaluate_student_answer(request.student_answer, request.teacher_answer)
+    print(results)
     return results
-
-
-def main():
-    print("Hello World")
-    uvicorn.run(app, port=8000, reload=True, workers=2)

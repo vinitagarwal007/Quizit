@@ -65,7 +65,8 @@ export default function AssessmentCard({ data, closed }) {
               Start
             </button>
           ) : (
-            <button>Edit</button>
+            // <button>Edit</button>
+            <></>
           )
         ) : authCtx.user.access == "Student" ? (
           <button

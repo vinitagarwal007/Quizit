@@ -97,7 +97,7 @@ export default function Assessment() {
                       <img src={plus} alt="" />
                     </div>
                   ) : (
-                    <></>
+                    <>No Assessments</>
                   )}
                 </>
               )
